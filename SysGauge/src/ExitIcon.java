@@ -21,6 +21,7 @@ public class ExitIcon {
 		close.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent op) {
+				systemTray.remove(InitIcon);
 				System.exit(0);
 			}	
 		});
