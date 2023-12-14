@@ -1,5 +1,7 @@
 import java.awt.AWTException;
 import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -16,11 +18,18 @@ import java.util.concurrent.TimeUnit;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSlider;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 public class GUI extends JFrame{
 	
 	private PrintWriter output;
+	private JLabel targVal = new JLabel("initialized");
+	public static JSlider slider = new JSlider(0,100,Main.debugVal);;
+	public static JButton OVR = new JButton("Enable Override");
 	
 	private class CPUListener implements ActionListener {
 		@Override
@@ -47,6 +56,60 @@ public class GUI extends JFrame{
 		}
 	}
 	
+	private class OVRL implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			if (Main.ovr) {
+				Main.ovr=false;
+				GUI.OVR.setText("Enable Overrride");
+				try {TimeUnit.MILLISECONDS.sleep(600);} catch (InterruptedException a) {}
+			} else {
+				Main.ovr=true;
+				GUI.OVR.setText("Disable Overrride");
+				try {TimeUnit.MILLISECONDS.sleep(600);} catch (InterruptedException a) {}
+			}
+		}
+	}
+	
+	private class DBGListener implements ActionListener {
+		JFrame f;
+		JPanel p1;
+		JPanel p2;
+		GridBagConstraints c;
+		public void assignFrame(JFrame jf, JPanel jp1, JPanel jp2, GridBagConstraints gbc) {
+			f=jf;
+			p1=jp1;
+			p2=jp2;
+			c=gbc;
+		}
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			if (Main.debug) {
+				System.out.println("Debug Disabled");
+				Main.debug=false;
+				f.setVisible(false);
+				p1.remove(p2);
+				f.pack();
+				f.setVisible(true);
+			} else {
+				System.out.println("Debug Enabled");
+				Main.debug=true;
+				f.setVisible(false);
+				p1.add(p2,c);
+				f.pack();
+				f.setVisible(true);
+			}
+		}
+	}
+	
+	public void targValUpdate(int dv, int v) {
+		if (dv==0) {
+			this.targVal.setText("CPU Load: " + String.valueOf(v) + "%");
+		} else {
+			this.targVal.setText("MEM Load: " + String.valueOf(v) + "%");
+		}
+	}
+	
 	private class LITListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -65,6 +128,13 @@ public class GUI extends JFrame{
 		}
 	}
 	
+	private class DBSL implements ChangeListener {
+		@Override
+		public void stateChanged(ChangeEvent e) {
+			Main.debugVal=GUI.slider.getValue();
+		}
+	}
+	
 	public GUI (PrintWriter p) {
 		this.output=p;
 	}
@@ -73,6 +143,7 @@ public class GUI extends JFrame{
 		CPUListener CPUL = new CPUListener();
 		MEMListener MEML = new MEMListener();
 		LITListener LITL = new LITListener();
+		DBGListener DBGL = new DBGListener();
 		
 		JFrame gui = new JFrame("Gauge Interface");
 		if (SystemTray.isSupported()) {
@@ -86,8 +157,45 @@ public class GUI extends JFrame{
 		
 		gui.setLayout(new BorderLayout());
 		
+		JPanel mainPanel = new JPanel(new GridBagLayout());
+		gui.add(mainPanel, BorderLayout.CENTER);
+		GridBagConstraints mainConstraints = new GridBagConstraints();
+		mainConstraints.anchor = GridBagConstraints.CENTER;
+		mainConstraints.gridwidth=1;
+		mainConstraints.gridx = 0;
+		mainConstraints.gridy = 0;
+		mainConstraints.weightx=0.5;
+		mainConstraints.weighty=1;
+		mainConstraints.fill=GridBagConstraints.BOTH;
+		mainConstraints.insets= new Insets(10, 20, 10, 20);
+		
+		JPanel labelPanel = new JPanel(new GridBagLayout());
+		labelPanel.setBorder(BorderFactory.createEmptyBorder());
+		mainPanel.add(labelPanel, mainConstraints);
+		mainConstraints.gridy++;
+		GridBagConstraints labelConstraints = new GridBagConstraints();
+		labelConstraints.anchor = GridBagConstraints.CENTER;
+		labelConstraints.gridx = 0;
+		labelConstraints.gridy = 0;
+		labelConstraints.weightx=0.75;
+		labelConstraints.weighty=1;
+		labelConstraints.fill=GridBagConstraints.HORIZONTAL;
+		labelConstraints.insets= new Insets(2, 4, 2, 4);
+		
+		JLabel title = new JLabel("System Gauge Interface");
+		title.setFont(new Font(title.getFont().getName(), Font.BOLD, 14));
+		labelPanel.add(title, labelConstraints);
+		labelConstraints.gridx++;
+		
+		JButton DBG = new JButton("Debug Mode");
+		DBG.addActionListener(DBGL);
+		labelConstraints.weightx=0.25;
+		labelPanel.add(DBG, labelConstraints);
+		
+		
 		JPanel topPanel = new JPanel(new GridBagLayout());
-		gui.add(topPanel, BorderLayout.CENTER);
+		mainPanel.add(topPanel, mainConstraints);
+		mainConstraints.gridy++;
 		topPanel.setBorder(BorderFactory.createTitledBorder("Display"));
 		GridBagConstraints topConstraints = new GridBagConstraints();
 		topConstraints.anchor = GridBagConstraints.CENTER;
@@ -95,7 +203,8 @@ public class GUI extends JFrame{
 		topConstraints.gridy = 0;
 		topConstraints.weightx=0.5;
 		topConstraints.weighty=1;
-		topConstraints.insets= new Insets(10, 20, 10, 20);
+		topConstraints.fill=GridBagConstraints.BOTH;
+		topConstraints.insets= new Insets(2, 4, 2, 4);
 		
 		JButton CPU = new JButton("CPU");
 		CPU.addActionListener(CPUL);
@@ -106,13 +215,53 @@ public class GUI extends JFrame{
 		MEM.addActionListener(MEML);
 		topPanel.add(MEM,topConstraints);
 		
-		JPanel bottomPanel = new JPanel(new BorderLayout());
-		gui.add(bottomPanel, BorderLayout.SOUTH);
+		JPanel bottomPanel = new JPanel(new GridBagLayout());
+		mainPanel.add(bottomPanel, mainConstraints);
+		mainConstraints.gridy++;
 		bottomPanel.setBorder(BorderFactory.createTitledBorder("Backlight"));
+		GridBagConstraints botConstraints = new GridBagConstraints();
+		botConstraints.anchor = GridBagConstraints.CENTER;
+		botConstraints.gridx = 0;
+		botConstraints.gridy = 0;
+		botConstraints.weightx=0.5;
+		botConstraints.weighty=1;
+		botConstraints.fill=GridBagConstraints.BOTH;
+		botConstraints.insets= new Insets(10, 20, 10, 20);
 		
 		JButton light = new JButton("Toggle");
 		light.addActionListener(LITL);
-		bottomPanel.add(light);
+		bottomPanel.add(light, botConstraints);
+		
+
+		JPanel debugPanel = new JPanel(new GridBagLayout());
+		debugPanel.setBorder(BorderFactory.createTitledBorder("Debug"));
+		GridBagConstraints dbgConstraints = new GridBagConstraints();
+		dbgConstraints.anchor = GridBagConstraints.CENTER;
+		dbgConstraints.gridx = 0;
+		dbgConstraints.gridy = 0;
+		dbgConstraints.weightx=0.5;
+		dbgConstraints.weighty=0.25;
+		dbgConstraints.fill=GridBagConstraints.BOTH;
+		dbgConstraints.insets= new Insets(10, 20, 10, 20);
+		
+		OVR.addActionListener(new OVRL());
+		debugPanel.add(OVR, dbgConstraints);
+		dbgConstraints.gridy++;
+		dbgConstraints.weighty=0.5;
+		
+		slider.setPaintTicks(true);
+		slider.setMinorTickSpacing(10);
+		slider.setPaintTrack(true);
+		slider.setMajorTickSpacing(20);
+		slider.setPaintLabels(true);
+		slider.addChangeListener(new DBSL());
+		debugPanel.add(slider,dbgConstraints);
+		dbgConstraints.gridy++;
+		
+		debugPanel.add(targVal, dbgConstraints);
+		
+		DBGL.assignFrame(gui, mainPanel, debugPanel, mainConstraints);
+		
 		gui.pack();
 		
 		open.addActionListener(new ActionListener() {

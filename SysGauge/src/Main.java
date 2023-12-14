@@ -11,6 +11,10 @@ public class Main {
 	public static int dispVal = 0;
 	public static int light = 0;
 	
+	public static boolean debug = false;
+	public static int debugVal = 50;
+	public static boolean ovr = false;
+	
 	public static void main(String[] args) {
 		ExitIcon exitIcon = new ExitIcon();
 		exitIcon.Toggle("on");
@@ -50,14 +54,14 @@ public class Main {
 		output.println(820);
 		output.flush();
 		
-		OperatingSystemMXBean systemRef = ManagementFactory.getPlatformMXBean(OperatingSystemMXBean.class);
-		SysPollThread poll = new SysPollThread(systemRef,output);
-		poll.start();
-		
 		exitIcon.Toggle("off");
 		
 		GUI gui = new GUI(output);
 		gui.initGUI();
+		
+		OperatingSystemMXBean systemRef = ManagementFactory.getPlatformMXBean(OperatingSystemMXBean.class);
+		SysPollThread poll = new SysPollThread(systemRef,output,gui);
+		poll.start();
 		
 		
 	}
