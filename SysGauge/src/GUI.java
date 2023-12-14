@@ -88,6 +88,10 @@ public class GUI extends JFrame{
 				System.out.println("Debug Disabled");
 				Main.debug=false;
 				f.setVisible(false);
+				if (Main.ovr) {
+					Main.ovr=false;
+					GUI.OVR.setText("Enable Override");
+				}
 				p1.remove(p2);
 				f.pack();
 				f.setVisible(true);
