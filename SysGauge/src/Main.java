@@ -30,7 +30,7 @@ public class Main {
 				Scanner pair = new Scanner(port.getInputStream());
 				SearchThread searching = new SearchThread(pair);
 				searching.start();
-				try {TimeUnit.SECONDS.sleep(3);} catch (InterruptedException e) {}
+				try {TimeUnit.SECONDS.sleep(2);} catch (InterruptedException e) {}
 				if (paired==true) {
 					comm=port;
 					System.out.println("Pairing Successful");

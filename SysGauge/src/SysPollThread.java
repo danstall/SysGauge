@@ -47,7 +47,6 @@ public class SysPollThread extends Thread{
 					sysMEMfree = systemRef.getFreeMemorySize();
 					targVal = (int)((1-(sysMEMfree/sysMEMtotal))*100);
 					gui.targValUpdate(1, targVal);
-					try {Thread.sleep(500);} catch (InterruptedException e) {}
 					if (Main.ovr) {
 						output.println("MEM%"+String.valueOf(Main.debugVal)+"!");
 						output.flush();
