@@ -29,7 +29,7 @@ import javax.swing.event.ChangeListener;
 public class GUI extends JFrame{
 	
 	private PrintWriter output;
-	private JLabel targVal = new JLabel("initialized");
+	private JLabel targVal = new JLabel("Waiting...");
 	public static JSlider slider = new JSlider(0,100,Main.debugVal);;
 	public static JButton OVR = new JButton("Enable Override");
 	public static JButton light = new JButton("OFF");

@@ -27,12 +27,12 @@ public class SysPollThread extends Thread{
 		int targVal=0;
 		while (true ) {
 			if (Main.debug) {
-				cpu = systemRef.getCpuLoad();
-				try {Thread.sleep(500);} catch (InterruptedException e) {}
-				cpu = systemRef.getCpuLoad();
-				targVal = (int)(cpu*100);
-				gui.targValUpdate(0, targVal);
 				if (Main.dispVal == 0) {
+					cpu = systemRef.getCpuLoad();
+					try {Thread.sleep(500);} catch (InterruptedException e) {}
+					cpu = systemRef.getCpuLoad();
+					targVal = (int)(cpu*100);
+					gui.targValUpdate(0, targVal);
 					if (Main.ovr) {
 					output.println("CPU%"+String.valueOf(Main.debugVal)+"!");
 					output.flush();
@@ -47,6 +47,7 @@ public class SysPollThread extends Thread{
 					sysMEMfree = systemRef.getFreeMemorySize();
 					targVal = (int)((1-(sysMEMfree/sysMEMtotal))*100);
 					gui.targValUpdate(1, targVal);
+					try {Thread.sleep(500);} catch (InterruptedException e) {}
 					if (Main.ovr) {
 						output.println("MEM%"+String.valueOf(Main.debugVal)+"!");
 						output.flush();
