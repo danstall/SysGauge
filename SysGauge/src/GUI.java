@@ -1,5 +1,6 @@
 import java.awt.AWTException;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
@@ -21,6 +22,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
+import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -30,6 +32,7 @@ public class GUI extends JFrame{
 	private JLabel targVal = new JLabel("initialized");
 	public static JSlider slider = new JSlider(0,100,Main.debugVal);;
 	public static JButton OVR = new JButton("Enable Override");
+	public static JButton light = new JButton("OFF");
 	
 	private class CPUListener implements ActionListener {
 		@Override
@@ -120,11 +123,13 @@ public class GUI extends JFrame{
 			if (Main.light==0) {
 				Main.light=1;
 				output.println("LIT%1!");
+				GUI.light.setText("ON");
 				System.out.println("Backlight Enabled");
 				try {TimeUnit.MILLISECONDS.sleep(600);} catch (InterruptedException a) {}
 			} else {
 				Main.light=0;
 				output.println("LIT%0!");
+				GUI.light.setText("OFF");
 				System.out.println("Backlight Disabled");
 				try {TimeUnit.MILLISECONDS.sleep(600);} catch (InterruptedException a) {}
 			}
@@ -144,6 +149,7 @@ public class GUI extends JFrame{
 	}
 	
 	public void initGUI() {
+		Border blackline = BorderFactory.createLineBorder(Color.black);
 		CPUListener CPUL = new CPUListener();
 		MEMListener MEML = new MEMListener();
 		LITListener LITL = new LITListener();
@@ -171,10 +177,10 @@ public class GUI extends JFrame{
 		mainConstraints.weightx=0.5;
 		mainConstraints.weighty=1;
 		mainConstraints.fill=GridBagConstraints.BOTH;
-		mainConstraints.insets= new Insets(10, 20, 10, 20);
+		mainConstraints.insets= new Insets(2, 4, 2, 4);
 		
 		JPanel labelPanel = new JPanel(new GridBagLayout());
-		labelPanel.setBorder(BorderFactory.createEmptyBorder());
+		labelPanel.setBorder(blackline);
 		mainPanel.add(labelPanel, mainConstraints);
 		mainConstraints.gridy++;
 		GridBagConstraints labelConstraints = new GridBagConstraints();
@@ -191,7 +197,7 @@ public class GUI extends JFrame{
 		labelPanel.add(title, labelConstraints);
 		labelConstraints.gridx++;
 		
-		JButton DBG = new JButton("Debug Mode");
+		JButton DBG = new JButton("Debug");
 		DBG.addActionListener(DBGL);
 		labelConstraints.weightx=0.25;
 		labelPanel.add(DBG, labelConstraints);
@@ -200,7 +206,7 @@ public class GUI extends JFrame{
 		JPanel topPanel = new JPanel(new GridBagLayout());
 		mainPanel.add(topPanel, mainConstraints);
 		mainConstraints.gridy++;
-		topPanel.setBorder(BorderFactory.createTitledBorder("Display"));
+		topPanel.setBorder(BorderFactory.createTitledBorder(blackline, "Display"));
 		GridBagConstraints topConstraints = new GridBagConstraints();
 		topConstraints.anchor = GridBagConstraints.CENTER;
 		topConstraints.gridx = 0;
@@ -222,7 +228,7 @@ public class GUI extends JFrame{
 		JPanel bottomPanel = new JPanel(new GridBagLayout());
 		mainPanel.add(bottomPanel, mainConstraints);
 		mainConstraints.gridy++;
-		bottomPanel.setBorder(BorderFactory.createTitledBorder("Backlight"));
+		bottomPanel.setBorder(BorderFactory.createTitledBorder(blackline, "Backlight"));
 		GridBagConstraints botConstraints = new GridBagConstraints();
 		botConstraints.anchor = GridBagConstraints.CENTER;
 		botConstraints.gridx = 0;
@@ -232,13 +238,13 @@ public class GUI extends JFrame{
 		botConstraints.fill=GridBagConstraints.BOTH;
 		botConstraints.insets= new Insets(10, 20, 10, 20);
 		
-		JButton light = new JButton("Toggle");
+		
 		light.addActionListener(LITL);
 		bottomPanel.add(light, botConstraints);
 		
 
 		JPanel debugPanel = new JPanel(new GridBagLayout());
-		debugPanel.setBorder(BorderFactory.createTitledBorder("Debug"));
+		debugPanel.setBorder(BorderFactory.createTitledBorder(blackline, "Debug"));
 		GridBagConstraints dbgConstraints = new GridBagConstraints();
 		dbgConstraints.anchor = GridBagConstraints.CENTER;
 		dbgConstraints.gridx = 0;
