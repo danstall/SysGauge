@@ -59,6 +59,15 @@ public class GUI extends JFrame{
 		}
 	}
 	
+	private class ZERListener implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			output.println("ZER%0!");
+			System.out.println("Gauge Zeroed");
+			try {TimeUnit.MILLISECONDS.sleep(600);} catch (InterruptedException a) {}
+		}
+	}
+	
 	private class OVRL implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -154,6 +163,7 @@ public class GUI extends JFrame{
 		MEMListener MEML = new MEMListener();
 		LITListener LITL = new LITListener();
 		DBGListener DBGL = new DBGListener();
+		ZERListener ZERL = new ZERListener();
 		
 		JFrame gui = new JFrame("Gauge Interface");
 		if (SystemTray.isSupported()) {
@@ -268,6 +278,11 @@ public class GUI extends JFrame{
 		debugPanel.add(slider,dbgConstraints);
 		dbgConstraints.gridy++;
 		
+		JButton ZER = new JButton("Zero Gauge");
+		ZER.addActionListener(ZERL);
+		debugPanel.add(ZER,dbgConstraints);
+		dbgConstraints.gridy++;
+		
 		debugPanel.add(targVal, dbgConstraints);
 		
 		DBGL.assignFrame(gui, mainPanel, debugPanel, mainConstraints);
@@ -286,6 +301,7 @@ public class GUI extends JFrame{
 			public void actionPerformed(ActionEvent op) {
 				output.println("DCN%0!");
 				systemTray.remove(icon);
+				try {TimeUnit.MILLISECONDS.sleep(1000);} catch (InterruptedException a) {}
 				System.exit(0);
 			}	
 		});
