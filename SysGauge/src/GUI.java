@@ -40,7 +40,6 @@ public class GUI extends JFrame{
 			if (Main.dispVal!=0) {
 				Main.dispVal=0;
 				output.println("DSP%0!");
-				System.out.println("CPU Load Displayed");
 				try {TimeUnit.MILLISECONDS.sleep(600);} catch (InterruptedException a) {}
 			}
 		}
@@ -52,7 +51,6 @@ public class GUI extends JFrame{
 			if (Main.dispVal!=1) {
 				Main.dispVal=1;
 				output.println("DSP%1!");
-				System.out.println("MEM Load Displayed");
 				try {TimeUnit.MILLISECONDS.sleep(600);} catch (InterruptedException a) {}
 			}
 			
@@ -63,7 +61,6 @@ public class GUI extends JFrame{
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			output.println("ZER%0!");
-			System.out.println("Gauge Zeroed");
 			try {TimeUnit.MILLISECONDS.sleep(600);} catch (InterruptedException a) {}
 		}
 	}
@@ -97,7 +94,6 @@ public class GUI extends JFrame{
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			if (Main.debug) {
-				System.out.println("Debug Disabled");
 				Main.debug=false;
 				f.setVisible(false);
 				if (Main.ovr) {
@@ -108,7 +104,6 @@ public class GUI extends JFrame{
 				f.pack();
 				f.setVisible(true);
 			} else {
-				System.out.println("Debug Enabled");
 				Main.debug=true;
 				f.setVisible(false);
 				p1.add(p2,c);
@@ -133,13 +128,11 @@ public class GUI extends JFrame{
 				Main.light=1;
 				output.println("LIT%1!");
 				GUI.light.setText("ON");
-				System.out.println("Backlight Enabled");
 				try {TimeUnit.MILLISECONDS.sleep(600);} catch (InterruptedException a) {}
 			} else {
 				Main.light=0;
 				output.println("LIT%0!");
 				GUI.light.setText("OFF");
-				System.out.println("Backlight Disabled");
 				try {TimeUnit.MILLISECONDS.sleep(600);} catch (InterruptedException a) {}
 			}
 			

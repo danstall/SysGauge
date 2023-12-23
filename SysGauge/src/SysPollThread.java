@@ -36,7 +36,6 @@ public class SysPollThread extends Thread{
 					if (Main.ovr) {
 					output.println("CPU%"+String.valueOf(Main.debugVal)+"!");
 					output.flush();
-					System.out.println("CPU Debug Value: "+String.valueOf(Main.debugVal));
 					} else {
 						output.println("CPU%"+String.valueOf(targVal)+"!");
 						output.flush();
@@ -51,7 +50,6 @@ public class SysPollThread extends Thread{
 					if (Main.ovr) {
 						output.println("MEM%"+String.valueOf(Main.debugVal)+"!");
 						output.flush();
-						System.out.println("MEM Debug Value: "+String.valueOf(Main.debugVal));
 					} else {
 						output.println("MEM%"+String.valueOf(targVal)+"!");
 						output.flush();

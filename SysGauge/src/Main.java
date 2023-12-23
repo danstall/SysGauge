@@ -23,21 +23,17 @@ public class Main {
 		while (paired==false) {
 		SerialPort ports[] = SerialPort.getCommPorts();
 		for (SerialPort port : ports) {
-			System.out.println(port.getSystemPortName());
 			port.setComPortTimeouts(SerialPort.TIMEOUT_SCANNER, 0, 0);
 			if (port.openPort()) {
-				System.out.println("Port Opened");
 				Scanner pair = new Scanner(port.getInputStream());
 				SearchThread searching = new SearchThread(pair);
 				searching.start();
 				try {TimeUnit.SECONDS.sleep(2);} catch (InterruptedException e) {}
 				if (paired==true) {
 					comm=port;
-					System.out.println("Pairing Successful");
 				} else {
 					searching.interrupt();
 					if(port.closePort()) {
-						System.out.println("Port Closed");
 					}
 				}
 			}
@@ -47,7 +43,6 @@ public class Main {
 		}
 		
 		comm.openPort();
-		System.out.println(comm.getSystemPortName());
 		PrintWriter output = new PrintWriter(comm.getOutputStream());
 		
 		
